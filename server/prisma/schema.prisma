@@ -46,7 +46,7 @@ model Match {
   homeTeam      Team     @relation("HomeTeamMatch", fields: [homeTeamId], references: [id])
   awayTeam      Team     @relation("AwayTeamMatch", fields: [awayTeamId], references: [id])
   matchDate     DateTime
-  venue         String?
+  stadium       String?
   result        Result[]
   goalsHomeTeam Int?
   goalsAwayTeam Int?
