@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id          Int       @id @default(autoincrement())
+  name        String
+  country     String
+  league      String
+  coach       String?
+  stadium     String?
+  founded     DateTime?
+  logo        String?
+  titles      Int?
+  idols       String?
+  fans        String?
+  players     Player[]
+  homeMatches Match[]   @relation("HomeTeamMatch")
+  awayMatches Match[]   @relation("AwayTeamMatch")
+
+  @@map("teams")
+}
+
+model Player {
+  id       Int    @id @default(autoincrement())
+  name     String
+  position String
+  team     Team   @relation(fields: [teamId], references: [id])
+  teamId   Int
+
+  @@map("player")
+}
+
+model Match {
+  id            Int      @id @default(autoincrement())
+  homeTeamId    Int
+  awayTeamId    Int
+  homeTeam      Team     @relation("HomeTeamMatch", fields: [homeTeamId], references: [id])
+  awayTeam      Team     @relation("AwayTeamMatch", fields: [awayTeamId], references: [id])
+  matchDate     DateTime
+  venue         String?
+  result        Result[]
+  goalsHomeTeam Int?
+  goalsAwayTeam Int?
+  cards         Card[]
+  referee       String?
+  attendance    Int?
+  highlights    String?
+  status        String
+}
+
+model Result {
+  id        Int   @id @default(autoincrement())
+  match     Match @relation(fields: [matchId], references: [id])
+  matchId   Int
+  homeGoals Int?
+  awayGoals Int?
+}
+
+model Card {
+  id      Int    @id @default(autoincrement())
+  match   Match  @relation(fields: [matchId], references: [id])
+  matchId Int
+  type    String // amarelo, vermelho, etc.
+  // ... outras propriedades do cartão
+}
